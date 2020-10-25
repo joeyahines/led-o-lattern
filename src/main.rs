@@ -91,24 +91,35 @@ fn get_duty(brightness: u8, max_duty: u16) -> u16 {
 /// This runs through each of the color channels from dim to bright to back to dim
 fn update_led_state(led_value: &mut LEDValue) {
     match led_value.count_state {
+        // Red
+        0 => {
+            led_value.red += 1;
+            if led_value.red == 255 {
+                led_value.count_state = 1
+            }
+        }
         1 => {
             led_value.red -= 1;
             if led_value.red == 0 {
                 led_value.count_state = 2
             }
         }
+        // Yellow
         2 => {
-            led_value.blue += 1;
-            if led_value.blue == 255 {
+            if led_value.red % 2 == 0 {led_value.green += 1};
+            led_value.red += 1;
+            if led_value.red == 255 {
                 led_value.count_state = 3
             }
         }
         3 => {
-            led_value.blue -= 1;
-            if led_value.blue == 0 {
+            if led_value.red % 2 == 0 {led_value.green -= 1};
+            led_value.red -= 1;
+            if led_value.red == 0 {
                 led_value.count_state = 4
             }
         }
+        // Green
         4 => {
             led_value.green += 1;
             if led_value.green == 255 {
@@ -118,14 +129,52 @@ fn update_led_state(led_value: &mut LEDValue) {
         5 => {
             led_value.green -= 1;
             if led_value.green == 0 {
+                led_value.count_state = 6
+            }
+        }
+        // Cyan
+        6 => {
+            led_value.green += 1;
+            led_value.blue+= 1;
+            if led_value.blue == 255 {
+                led_value.count_state = 7
+            }
+        }
+        7 => {
+            led_value.green -= 1;
+            led_value.blue -= 1;
+            if led_value.blue == 0 {
+                led_value.count_state = 8
+            }
+        }
+        // Blue
+        8 => {
+            led_value.blue += 1;
+            if led_value.blue == 255 {
+                led_value.count_state = 9
+            }
+        }
+        9 => {
+            led_value.blue -= 1;
+            if led_value.blue == 0 {
+                led_value.count_state = 10
+            }
+        }
+        // Magenta
+        10 => {
+            led_value.blue += 1;
+            led_value.red += 1;
+            if led_value.red == 255 {
+                led_value.count_state = 11
+            }
+        }
+        11 => {
+            led_value.blue -= 1;
+            led_value.red -= 1;
+            if led_value.red == 0 {
                 led_value.count_state = 0
             }
         }
-        _ => {
-            led_value.red += 1;
-            if led_value.red == 255 {
-                led_value.count_state = 1
-            }
-        }
+        _ => {}
     }
 }
